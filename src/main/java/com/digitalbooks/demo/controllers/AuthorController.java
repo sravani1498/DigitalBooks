@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,16 +20,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalbooks.demo.models.Author;
+import com.digitalbooks.demo.models.Books;
 import com.digitalbooks.demo.models.ERole;
 import com.digitalbooks.demo.models.Role;
+import com.digitalbooks.demo.payload.request.CreateBookRequest;
 import com.digitalbooks.demo.payload.request.LoginRequest;
 import com.digitalbooks.demo.payload.request.SignupRequest;
 import com.digitalbooks.demo.payload.response.JwtResponse;
 import com.digitalbooks.demo.payload.response.MessageResponse;
 import com.digitalbooks.demo.repository.AuthorRepository;
+import com.digitalbooks.demo.repository.BookRepository;
 import com.digitalbooks.demo.repository.RoleRepository;
 import com.digitalbooks.demo.security.jwt.JwtUtils;
 import com.digitalbooks.demo.security.services.UserDetailsImpl;
@@ -45,6 +50,9 @@ public class AuthorController {
 
 	@Autowired
 	RoleRepository roleRepository;
+	
+	@Autowired
+	BookRepository bookRepository;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -122,4 +130,21 @@ public class AuthorController {
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
+	
+	
+	@PostMapping("/createBook")
+	public ResponseEntity<?> createBook(@RequestParam String token, @Valid @RequestBody CreateBookRequest createBookRequest) {
+		System.out.println(token);
+		if(jwtUtils.validateJwtToken(token)) {
+			String authorUserName = jwtUtils.getUserNameFromJwtToken(token);
+			Books book = new Books(createBookRequest.getTitle(), createBookRequest.getCategory(), authorUserName,
+					createBookRequest.getPublisher(), createBookRequest.getContent(), createBookRequest.getLogo(), createBookRequest.getPrice(), createBookRequest.getStatus());
+			bookRepository.save(book);
+			return ResponseEntity.ok(new MessageResponse("Book published successfully!"));
+		} else {
+			 return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		
+	}
+	
 }

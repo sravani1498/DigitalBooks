@@ -34,12 +34,15 @@ public class JwtUtils {
 				.compact();
 	}
 
+	private final String PREFIX = "Bearer ";
+
 	public String getUserNameFromJwtToken(String token) {
-		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token.replace(PREFIX, "")).getBody().getSubject();
 	}
 
 	public boolean validateJwtToken(String authToken) {
 		try {
+			authToken = authToken.replace(PREFIX, "");
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException e) {
