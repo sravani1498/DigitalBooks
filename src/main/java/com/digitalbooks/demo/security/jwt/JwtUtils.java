@@ -40,7 +40,7 @@ public class JwtUtils {
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token.replace(PREFIX, "")).getBody().getSubject();
 	}
 
-	public boolean validateJwtToken(String authToken) {
+	public boolean validateJwtToken(String authToken){
 		try {
 			authToken = authToken.replace(PREFIX, "");
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

@@ -1,9 +1,10 @@
-	package com.digitalbooks.demo.models;
+	package com.digitalbooks.demo.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -13,7 +14,7 @@ public class Books {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long bookId;
 	
 	@NotBlank
 	private String title;
@@ -21,9 +22,26 @@ public class Books {
 	@NotBlank
 	private String category;
 	
-	@NotBlank
-	private String author;
+	@ManyToOne
+	private User user;
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	
+	public Long getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Long bookId) {
+		this.bookId = bookId;
+	}
+
 	@NotBlank
 	private String publisher;
 	
@@ -36,8 +54,11 @@ public class Books {
 	
 	private Double price;
 	
-	public Books(String title, String category, String author,String publisher, String content, String logo, Double price, Boolean status ) {
-		this.author = author;
+	public Books() {
+		
+	}
+	
+	public Books(String title, String category, String publisher, String content, String logo, Double price, Boolean status ,User user) {
 		this.category = category;
 		this.content = content;
 		this.logo = logo;
@@ -45,6 +66,7 @@ public class Books {
 		this.publisher = publisher;
 		this.status = status;
 		this.title = title;
+		this.user = user;
 	}
 
 	
@@ -54,14 +76,6 @@ public class Books {
 
 	public void setPrice(Double price) {
 		this.price = price;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getTitle() {
@@ -78,14 +92,6 @@ public class Books {
 
 	public void setCategory(String category) {
 		this.category = category;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
 	}
 
 	public String getPublisher() {

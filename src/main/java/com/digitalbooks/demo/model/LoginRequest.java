@@ -1,4 +1,4 @@
-package com.digitalbooks.demo.payload.request;
+package com.digitalbooks.demo.model;
 
 import javax.validation.constraints.NotBlank;
 

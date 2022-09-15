@@ -1,4 +1,4 @@
-package com.digitalbooks.demo.models;
+package com.digitalbooks.demo.entity;
 
 import javax.persistence.*;
 
