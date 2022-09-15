@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.digitalbooks.demo.entity.Books;
-import com.digitalbooks.demo.entity.User;
 import com.digitalbooks.demo.model.BookModel;
 import com.digitalbooks.demo.services.AuthorService;
 
@@ -29,21 +27,14 @@ public class AuthorController extends BaseController {
 	
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@PostMapping("/{authorId}/books")
-	public ResponseEntity<?> createBook(@PathVariable("authorId") Long authorId, @Valid @RequestBody BookModel createBookRequest) {
-		User user = new User();
-		user.setUserId(authorId);
-		Books book = new Books(createBookRequest.getTitle(), createBookRequest.getCategory(), 
-					createBookRequest.getPublisher(), createBookRequest.getContent(), createBookRequest.getLogo(), createBookRequest.getPrice(), createBookRequest.getStatus(),user);
-			return authorService.createBook(book);
+	public ResponseEntity<?> createBook(@PathVariable("authorId") Long authorId, @Valid @RequestBody BookModel bookModel) {
+		
+			return authorService.createBook(authorId, bookModel);
 	}
 	
 	@PreAuthorize("hasRole('AUTHOR')")
 	@PutMapping("{authorId}/books/{bookId}")
-	public ResponseEntity<?>  updateBook(@PathVariable("authorId") Long authorId, @PathVariable("bookId") String bookId, @Valid @RequestBody BookModel createBookRequest) {
-		User user = new User();
-		user.setUserId(authorId);
-		Books book = new Books(createBookRequest.getTitle(), createBookRequest.getCategory(), 
-					createBookRequest.getPublisher(), createBookRequest.getContent(), createBookRequest.getLogo(), createBookRequest.getPrice(), createBookRequest.getStatus(),user);
-		return authorService.updateBook(authorId, book);
+	public ResponseEntity<?>  updateBook(@PathVariable("authorId") Long authorId, @PathVariable("bookId") Long bookId, @Valid @RequestBody BookModel bookModel) {
+		return authorService.updateBook(authorId,bookId, bookModel);
 	}		
 }

@@ -20,7 +20,17 @@ public class BookModel {
 	
 	private String logo;
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	private Double price;
+	
+	private Long id;
 
 	public String getTitle() {
 		return title;
@@ -77,5 +87,20 @@ public class BookModel {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
+	public BookModel(String content) {
+		this.content = content;
+	}
+	
+	public BookModel(Long id,String title, String category, String publisher, String content, String logo, Double price, Boolean status) {
+		this.category = category;
+		this.content = content;
+		this.logo = logo;
+		this.price = price;
+		this.publisher = publisher;
+		this.status = status;
+		this.title = title;
+		this.id = id;
+	}
+	
 
 }

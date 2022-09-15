@@ -39,7 +39,7 @@ import com.digitalbooks.demo.security.services.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/v1/digitalbooks/author")
+@RequestMapping("/api/v1/digitalbooks/auth")
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -59,7 +59,7 @@ public class AuthController {
 	@Autowired
 	JwtUtils jwtUtils;
 
-	@PostMapping("/signin")
+	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(

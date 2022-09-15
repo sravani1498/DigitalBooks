@@ -1,5 +1,7 @@
 package com.digitalbooks.demo.services;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.digitalbooks.demo.entity.Books;
 import com.digitalbooks.demo.entity.Payment;
+import com.digitalbooks.demo.entity.User;
+import com.digitalbooks.demo.model.BookModel;
+import com.digitalbooks.demo.model.PaymentRequest;
 import com.digitalbooks.demo.payload.response.MessageResponse;
 import com.digitalbooks.demo.repository.BookRepository;
 import com.digitalbooks.demo.repository.PaymentRepository;
@@ -22,13 +27,34 @@ public class ReaderService {
 	@Autowired
 	PaymentRepository paymentRepository;
 	
-	public List<Books> search(Long authorID, String category,Double price, String publisher) {
-		return bookRepository.findByUserUserIdAndCategoryAndPriceAndPublisher(authorID, category, price, publisher);	
+	public List<BookModel> search(Long authorID, String category,Double price, String publisher) {
+		List<BookModel> booksList = new ArrayList<BookModel>();
+		
+		List<Books> bookList = bookRepository.findByUserUserIdAndCategoryAndPriceAndPublisher(authorID, category, price, publisher);	
+
+		bookList.forEach(books -> {
+			BookModel bookModel = new BookModel(books.getBookId(),books.getTitle(), books.getCategory(), 
+					books.getPublisher(), books.getContent(), books.getLogo(), books.getPrice(), books.getStatus());
+//			bookModel.setTitle(books.getTitle());
+//			bookModel.setCategory(books.getCategory());
+//			bookModel.setContent(books.getContent());
+//			bookModel.setLogo(books.getLogo());
+//			bookModel.setPrice(books.getPrice());
+//			bookModel.setPublisher(books.getPublisher());
+//			bookModel.setStatus(books.getStatus());
+			booksList.add(bookModel);
+		});
+		return booksList;
 	}
 	
-	public ResponseEntity<MessageResponse> createPayment(Payment payment) {
+	public ResponseEntity<MessageResponse> createPayment(PaymentRequest payment) {
+		User user = new User();
+		user.setUserId(payment.getReaderId());
+		Books book = new Books();
+		book.setBookId(payment.getBookId());
+		Payment paymentModel = new Payment(new Date(),user, book);
 		try {
-			paymentRepository.save(payment);
+			paymentRepository.save(paymentModel);
 			return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Payment Successfully"));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -37,12 +63,34 @@ public class ReaderService {
 		
 	}
 	
-	public List<Payment> listPurchasedBooks(Long readerId) {
-		return paymentRepository.findByUserUserId(readerId);
+	public List<BookModel> listPurchasedBooks(Long readerId) {
+		List<Payment> paymentList = paymentRepository.findByUserUserId(readerId);
+		List<BookModel> booksList = new ArrayList<BookModel>();
+		paymentList.forEach(payment -> {
+			Books books = payment.getBook();
+			BookModel bookModel = new BookModel(books.getBookId(),books.getTitle(), books.getCategory(), 
+					books.getPublisher(), books.getContent(), books.getLogo(), books.getPrice(), books.getStatus());
+			booksList.add(bookModel);
+		});
+		return booksList;
 	}
 	
-	public Payment listBookByPaymentID(Long readerId, Long pid) {
-		return paymentRepository.findByUserUserIdAndId(readerId, pid);
+	public BookModel listBookByPaymentID(Long readerId, Long pid) {
+		Payment payment = paymentRepository.findByUserUserIdAndId(readerId, pid);
+		Books books = payment.getBook();
+		BookModel bookModel = new BookModel(books.getBookId(),books.getTitle(), books.getCategory(), 
+				books.getPublisher(), books.getContent(), books.getLogo(), books.getPrice(), books.getStatus());
+		return bookModel;
+	}
+	
+	public BookModel readBook(Long readerId, Long bookId) {
+		Payment payment = paymentRepository.findByUserUserIdAndBookBookId(readerId, bookId);
+		if(payment != null){
+			Books book = payment.getBook();
+			BookModel bookModel = new BookModel(book.getContent());
+			return bookModel;
+		}
+		return null;
 	}
 
 }

@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/api/v1/digitalbooks/author/signin", "/api/v1/digitalbooks/author/signup","/api/v1/digitalbooks/reader/books/search")
+			.authorizeRequests().antMatchers("/api/v1/digitalbooks/auth/**", "/api/v1/digitalbooks/reader/books/search")
 			.permitAll()
 			.antMatchers("/api/test/**").permitAll()
 			.anyRequest().authenticated();
