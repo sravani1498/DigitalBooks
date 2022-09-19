@@ -91,6 +91,10 @@ public class BookModel {
 		this.content = content;
 	}
 	
+	public BookModel() {
+		
+	}
+	 
 	public BookModel(Long id,String title, String category, String publisher, String content, String logo, Double price, Boolean status) {
 		this.category = category;
 		this.content = content;

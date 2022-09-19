@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,10 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digitalbooks.demo.entity.ERole;
 import com.digitalbooks.demo.entity.Role;
 import com.digitalbooks.demo.entity.User;
+import com.digitalbooks.demo.model.JwtResponse;
 import com.digitalbooks.demo.model.LoginRequest;
+import com.digitalbooks.demo.model.MessageResponse;
+import com.digitalbooks.demo.model.SignUpModel;
 import com.digitalbooks.demo.model.SignupRequest;
-import com.digitalbooks.demo.payload.response.JwtResponse;
-import com.digitalbooks.demo.payload.response.MessageResponse;
 import com.digitalbooks.demo.repository.UserRepository;
 import com.digitalbooks.demo.repository.BookRepository;
 import com.digitalbooks.demo.repository.RoleRepository;
@@ -125,9 +127,16 @@ public class AuthController {
 		}
 
 		user.setRoles(roles);
-		userRepository.save(user);
-
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		User createduser = userRepository.save(user);
+		SignUpModel signup = new SignUpModel();
+		if(createduser.getUserId() != null) {
+			signup.setId(createduser.getUserId());
+			signup.setMessage("User registered successfully!");
+	
+			return ResponseEntity.ok(signup);
+		}else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("user Creation failed"));
+		}
 	}
 	
 	@RequestMapping(value="/logout", method=RequestMethod.GET)  

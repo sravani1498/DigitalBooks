@@ -1,4 +1,4 @@
-package com.digitalbooks.demo.payload.response;
+package com.digitalbooks.demo.model;
 
 public class MessageResponse {
 	private String message;

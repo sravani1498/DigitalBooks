@@ -1,4 +1,4 @@
-package com.digitalbooks.demo.payload.response;
+package com.digitalbooks.demo.model;
 
 import java.util.List;
 
