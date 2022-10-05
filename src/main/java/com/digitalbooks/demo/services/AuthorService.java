@@ -1,5 +1,8 @@
 package com.digitalbooks.demo.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +42,22 @@ public class AuthorService {
 		try {
 			book.setBookId(bookId);
 			bookRepository.save(book);
-			return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Book Updated Successfully"));
+			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Book Updated Successfully"));
 		} catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Please try after some time.."));
 		}
 		
+	}
+
+	public List<BookModel> listOfBooks(Long authorId) {
+		List<BookModel> bookModelList = new ArrayList<BookModel>();
+		List<Books> booksList = bookRepository.findByUserUserId(authorId);
+		booksList.forEach(books -> {
+			BookModel bookModel = new BookModel(books.getBookId(),books.getTitle(), books.getCategory(), 
+						books.getPublisher(), books.getContent(), books.getLogo(), books.getPrice(), books.getStatus());
+			bookModelList.add(bookModel);
+		});
+		return bookModelList;
 	}
 
 }

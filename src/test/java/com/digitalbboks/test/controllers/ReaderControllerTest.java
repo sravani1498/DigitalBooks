@@ -5,12 +5,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
@@ -30,19 +33,32 @@ public class ReaderControllerTest {
 	
 	@Test
 	public void searchTest() {
-		long authorId = 1;
+		String title = "book1";
 		String category = "comedy";
 		double price = 12.81;
 		String publisher = "xyz publications";
 		
 		List<BookModel> actual = new ArrayList<>();
 		
-		when(service.search(authorId, category, price, publisher)).thenReturn(actual);
+		when(service.search(title, category, publisher)).thenReturn(actual);
 		
-		List<BookModel> expected = controller.search(authorId, category, price, publisher);
+		List<BookModel> expected = controller.search(title, category, publisher);
 		
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+    public void searchBook() {
+		BookModel bookResponse = new BookModel();
+		bookResponse.setCategory("comedy");
+		bookResponse.setTitle("book1");
+		bookResponse.setPrice(42.98);
+        List<BookModel> bookResponseList = new ArrayList<>();
+        bookResponseList.add(bookResponse);
+        Mockito.when(service.search("title", "category", "publisher")).thenReturn(bookResponseList);
+        List<BookModel> res = controller.search("title", "category", "publisher");
+        Assert.assertNotNull(res);
+    }
 	
 	@Test
 	public void buyTest() {

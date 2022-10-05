@@ -138,14 +138,4 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("user Creation failed"));
 		}
 	}
-	
-	@RequestMapping(value="/logout", method=RequestMethod.GET)  
-    public ResponseEntity<?> logoutPage(HttpServletRequest request, HttpServletResponse response) {  
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();  
-        if (auth != null){      
-           new SecurityContextLogoutHandler().logout(request, response, auth);  
-        }  
-		return ResponseEntity.ok(new MessageResponse("logout successfully!"));
-     }  
-
 }

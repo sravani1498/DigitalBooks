@@ -11,8 +11,8 @@ import com.digitalbooks.demo.entity.Books;
 @Repository
 public interface BookRepository extends JpaRepository<Books, Long>{
 	
-	Optional< List<Books> >findByUserUserIdAndCategoryAndPriceAndPublisher(Long userId, String category, double price,String publisher);
-	
+	Optional< List<Books> >findByTitleAndCategoryAndPublisher(String title, String category, String publisher);
+	List<Books> findByUserUserId(Long authorId);
 
 
 }

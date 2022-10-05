@@ -1,6 +1,8 @@
 
 package com.digitalbooks.demo.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,9 +46,15 @@ public class AuthorController{
 			}
 	}
 	
-	@PreAuthorize("hasRole('AUTHOR')")
+	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@PutMapping("{authorId}/books/{bookId}")
 	public ResponseEntity<?>  updateBook(@PathVariable("authorId") Long authorId, @PathVariable("bookId") Long bookId, @Valid @RequestBody BookModel bookModel) {
 		return authorService.updateBook(authorId,bookId, bookModel);
-	}		
+	}	
+	
+	@PreAuthorize("hasRole('ROLE_AUTHOR')")
+	@GetMapping("{authorId}/books")
+	public List<BookModel>  listOfBooks(@PathVariable("authorId") Long authorId) {
+		return authorService.listOfBooks(authorId);
+	}
 }

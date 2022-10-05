@@ -32,8 +32,8 @@ public class ReaderController {
 	ReaderService readerService;
 	
 	@GetMapping("books/search")
-	public List<BookModel> search(@RequestParam("authorId") Long authorID, @RequestParam("category") String category, @RequestParam("price") Double price,@RequestParam("publisher") String publisher){
-		return readerService.search(authorID, category, price, publisher);
+	public List<BookModel> search(@RequestParam("title") String title, @RequestParam("category") String category, @RequestParam("publisher") String publisher){
+		return readerService.search(title, category, publisher);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_READER')")

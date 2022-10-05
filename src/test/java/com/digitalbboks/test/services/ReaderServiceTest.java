@@ -42,7 +42,7 @@ public class ReaderServiceTest {
 	
 	@Test
 	public void search() {
-		long authorID = 1;
+		String title = "book1";
 		String category = "comedy";
 		double price = 230;
 		String publisher = "xyz publications";
@@ -51,12 +51,12 @@ public class ReaderServiceTest {
 		List<BookModel> bookModelList = new ArrayList<BookModel>();
 		bookModelList.add(new BookModel(""));
 
-        when(bookRepo.findByUserUserIdAndCategoryAndPriceAndPublisher(authorID, category, price, publisher)).thenReturn(booksList);
+        when(bookRepo.findByTitleAndCategoryAndPublisher(title, category,  publisher)).thenReturn(booksList);
         
-		List<BookModel> expected = readerService.search(authorID, category, price, publisher);
+		List<BookModel> expected = readerService.search(title, category,  publisher);
 
 		assertEquals(expected, booksList.get());
-		verify(bookRepo).findByUserUserIdAndCategoryAndPriceAndPublisher(authorID, category, price, publisher);
+		verify(bookRepo).findByTitleAndCategoryAndPublisher(title, category,  publisher);
  
 	}
 	
