@@ -1,5 +1,6 @@
 package com.digitalbooks.demo.services;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class AuthorService {
 	@Autowired
 	BookRepository bookRepository;
 	
-	public Books createBook(Long authorId, BookModel bookModel) {
+	public Books createBook(Long authorId, BookModel bookModel) throws SQLException, InternalServerErrorException{
 		User user = new User();
 		user.setUserId(authorId);
 		Books book = new Books(bookModel.getTitle(), bookModel.getCategory(), 
@@ -29,12 +30,12 @@ public class AuthorService {
 		try {
 			return bookRepository.save(book);
 		} catch(Exception e) {
-			throw new InternalServerErrorException("Please try after sometime.");
+			throw new InternalServerErrorException("Exception while persisting into db please try again");
 		}
 		
 	}
 	
-	public ResponseEntity<MessageResponse> updateBook(Long authorId, Long bookId,BookModel bookModel) {
+	public ResponseEntity<MessageResponse> updateBook(Long authorId, Long bookId,BookModel bookModel) throws SQLException, InternalServerErrorException{
 		User user = new User();
 		user.setUserId(authorId);
 		Books book = new Books(bookModel.getTitle(), bookModel.getCategory(), 

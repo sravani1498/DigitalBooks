@@ -16,12 +16,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.digitalbooks.demo.controllers.AuthController;
 import com.digitalbooks.demo.entity.ERole;
 import com.digitalbooks.demo.entity.Role;
+import com.digitalbooks.demo.entity.User;
 import com.digitalbooks.demo.model.LoginRequest;
+import com.digitalbooks.demo.model.SignUpModel;
 import com.digitalbooks.demo.model.SignupRequest;
 import com.digitalbooks.demo.repository.RoleRepository;
 import com.digitalbooks.demo.repository.UserRepository;
 import com.digitalbooks.demo.security.jwt.JwtUtils;
 import com.digitalbooks.demo.security.services.UserDetailsImpl;
+
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -52,7 +56,7 @@ public class TestAuthController {
     Authentication authentication;
 
     @Test
-    public void authenticateUserTest() {
+    public void testAuthenticateUser() {
         LoginRequest request = new LoginRequest();
         request.setUsername("sravani");
         request.setPassword("pass1234");
@@ -89,9 +93,70 @@ public class TestAuthController {
         Mockito.when(userRepository.existsByUsername("sravani")).thenReturn(false);
         Mockito.when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn("nsbcuyscsjchs");
         Mockito.when(roleRepository.findByName(ERole.ROLE_READER)).thenReturn(readerRole);
+        User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
+		when(createduser.getUserId()!=null).thenReturn(true);
+
         ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
         Assert.assertNotNull(responseEntity);
     }
+    
+    @Test(expected = RuntimeException.class)
+    public void testRegisterUserFail() {
+        SignupRequest signupRequest = new SignupRequest();
+        Set<String> strRoles = new HashSet<>();
+        strRoles.add("user");
+        signupRequest.setEmail("sravani@gmail.com");
+        signupRequest.setUsername("sravani");
+        signupRequest.setPassword("pass1234");
+        signupRequest.setRole(strRoles);
+        Role role = new Role();
+        role.setName(ERole.ROLE_READER);
+        role.setId(1);
+        Optional<Role> readerRole = Optional.of(role);
+        Mockito.when(userRepository.existsByEmail("sravani@gmail.com")).thenReturn(false);
+        Mockito.when(userRepository.existsByUsername("sravani")).thenReturn(false);
+        Mockito.when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn("nsbcuyscsjchs");
+        Mockito.when(roleRepository.findByName(ERole.ROLE_READER)).thenReturn(readerRole);
+        User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
+		when(createduser.getUserId()!=null).thenReturn(false);
+
+        ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
+        Assert.assertNotNull(responseEntity);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void registerReaderTest1() {
+        SignupRequest signupRequest = new SignupRequest();
+        Set<String> strRoles = new HashSet<>();
+        strRoles.add("user");
+        signupRequest.setEmail("sravani@gmail.com");
+        signupRequest.setUsername("sravani");
+        signupRequest.setPassword("pass1234");
+        signupRequest.setRole(strRoles);
+        Role role = new Role();
+        role.setName(ERole.ROLE_READER);
+        role.setId(1);
+        Optional<Role> readerRole = Optional.of(role);
+        Mockito.when(userRepository.existsByEmail("sravani@gmail.com")).thenReturn(false);
+        Mockito.when(userRepository.existsByUsername("sravani")).thenReturn(false);
+        Mockito.when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn("nsbcuyscsjchs");
+        Mockito.when(roleRepository.findByName(ERole.ROLE_READER)).thenReturn(readerRole);
+        User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
+        ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
+        Assert.assertNotNull(responseEntity);
+    }   
 
     @Test(expected = RuntimeException.class)
     public void registerUserExceptionTest() {
@@ -105,6 +170,12 @@ public class TestAuthController {
         Mockito.when(userRepository.existsByEmail("sravani@gmail.com")).thenReturn(false);
         Mockito.when(userRepository.existsByUsername("sravani")).thenReturn(false);
         Mockito.when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn("sfhjhfscjhfec");
+        User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
+
         ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
         Assert.assertNotNull(responseEntity);
     }
@@ -126,6 +197,11 @@ public class TestAuthController {
         Mockito.when(userRepository.existsByUsername("sravani")).thenReturn(false);
         Mockito.when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn("sdhsfsnfsjhc");
         Mockito.when(roleRepository.findByName(ERole.ROLE_AUTHOR)).thenReturn(authorRole);
+        User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
         ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
         Assert.assertNotNull(responseEntity);
     }
@@ -144,6 +220,11 @@ public class TestAuthController {
         Mockito.when(userRepository.existsByUsername("sravani")).thenReturn(false);
         Mockito.when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn("shjsdscnscns");
         Mockito.when(roleRepository.findByName(ERole.ROLE_READER)).thenReturn(readerRole);
+        User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
         ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
         Assert.assertNotNull(responseEntity);
     }
@@ -166,6 +247,15 @@ public class TestAuthController {
         signupRequest.setUsername("sravani");
         signupRequest.setPassword("pass123");
         Mockito.when(userRepository.existsByEmail("sravani@gmail.com")).thenReturn(true);
+        User user = new User();
+        user.setUserId(123L);
+        Mockito.when(userRepository.save(user)).thenReturn(user);
+		User createduser =new User();
+		createduser.setUserId(123L);
+		SignUpModel signup = new SignUpModel();
+		signup.setId(createduser.getUserId());
+		signup.setMessage("User registered successfully!");
+		
         ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
         Assert.assertNotNull(responseEntity);
     }

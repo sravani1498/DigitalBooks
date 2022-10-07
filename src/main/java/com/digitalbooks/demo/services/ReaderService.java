@@ -50,11 +50,11 @@ public class ReaderService {
 		try {
 			return paymentRepository.save(paymentModel);
 		}catch (Exception e) {
-			throw new InternalServerErrorException(e.getMessage());
+			throw new InternalServerErrorException("Exception while persisting into db please try again");
 		}
 	}
 	
-	public List<BookModel> listPurchasedBooks(Long readerId) {
+	public List<BookModel> listPurchasedBooks(Long readerId) throws Exception{
 		List<BookModel> booksList = new ArrayList<BookModel>();
 		Optional<List<Payment>> paymentList = Optional.of(paymentRepository.findByUserUserId(readerId).orElseThrow(()->new ResourceNotFoundException("No purchased books available.")));
 		if(paymentList.isPresent()) {

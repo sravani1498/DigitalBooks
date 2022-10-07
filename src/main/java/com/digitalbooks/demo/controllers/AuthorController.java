@@ -1,6 +1,7 @@
 
 package com.digitalbooks.demo.controllers;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalbooks.demo.entity.Books;
+import com.digitalbooks.demo.exception.InternalServerErrorException;
 import com.digitalbooks.demo.model.BookModel;
 import com.digitalbooks.demo.model.BookResponseModel;
 import com.digitalbooks.demo.model.MessageResponse;
@@ -34,7 +36,7 @@ public class AuthorController{
 	
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@PostMapping("/{authorId}/books")
-	public ResponseEntity<?> createBook(@PathVariable("authorId") Long authorId, @Valid @RequestBody BookModel bookModel) {
+	public ResponseEntity<?> createBook(@PathVariable("authorId") Long authorId, @Valid @RequestBody BookModel bookModel) throws InternalServerErrorException, SQLException {
 			BookResponseModel bookResponseModel = new BookResponseModel();
 			Books book = authorService.createBook(authorId, bookModel);
 			if(book != null) {
@@ -48,7 +50,7 @@ public class AuthorController{
 	
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@PutMapping("{authorId}/books/{bookId}")
-	public ResponseEntity<?>  updateBook(@PathVariable("authorId") Long authorId, @PathVariable("bookId") Long bookId, @Valid @RequestBody BookModel bookModel) {
+	public ResponseEntity<?>  updateBook(@PathVariable("authorId") Long authorId, @PathVariable("bookId") Long bookId, @Valid @RequestBody BookModel bookModel) throws InternalServerErrorException, SQLException {
 		return authorService.updateBook(authorId,bookId, bookModel);
 	}	
 	

@@ -2,6 +2,7 @@ package com.digitalbboks.test.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,16 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.digitalbooks.demo.entity.Books;
 import com.digitalbooks.demo.entity.Payment;
 import com.digitalbooks.demo.entity.User;
+import com.digitalbooks.demo.exception.ResourceNotFoundException;
 import com.digitalbooks.demo.model.BookModel;
 import com.digitalbooks.demo.model.MessageResponse;
 import com.digitalbooks.demo.model.PaymentRequest;
@@ -46,18 +50,25 @@ public class ReaderServiceTest {
 		String category = "comedy";
 		double price = 230;
 		String publisher = "xyz publications";
+		User user = new User();
+		user.setUserId(123L);
+		Books book = new Books("title","category","publisher","content","logo",120.0,true,user);
+		book.setBookId(123L);
 		
-		Optional<List<Books>> booksList = Optional.ofNullable(new ArrayList<Books>());
+		List<Books> bookList = new ArrayList<Books>();
+		bookList.add(book);
+		Optional<List<Books>> booksList = Optional.ofNullable(bookList);
+		
 		List<BookModel> bookModelList = new ArrayList<BookModel>();
-		bookModelList.add(new BookModel(""));
-
+		Books books = new Books();
+		books.setBookId(123L);
+		BookModel bookResponse = new BookModel(123L,"book1", "comedy","xyz", "sncdhcdhdvdnhdhv", "image1.png", 120.0, true);
+		bookModelList.add(bookResponse);
         when(bookRepo.findByTitleAndCategoryAndPublisher(title, category,  publisher)).thenReturn(booksList);
         
 		List<BookModel> expected = readerService.search(title, category,  publisher);
 
-		assertEquals(expected, booksList.get());
-		verify(bookRepo).findByTitleAndCategoryAndPublisher(title, category,  publisher);
- 
+		assertNotNull(expected); 
 	}
 	
 	@Test
@@ -81,30 +92,71 @@ public class ReaderServiceTest {
 	}
 	
 	@Test
-	public void listPurchasedBooksTest() {
+	public void listPurchasedBooksTest() throws Exception {
 		long readerId = 4;
+		Payment payment = new Payment();
+		payment.setId(123L);
+		User user = new User();
+		user.setUserId(123L);
+		Books book = new Books("title","category","publisher","content","logo",120.0,true,user);
+		book.setBookId(123L);
+		
+		payment.setBook(book);
+		
+		List<Payment> pList = new ArrayList<Payment>();
+		pList.add(payment);
 	
-		Optional<List<Payment>> payment = Optional.ofNullable(new ArrayList<Payment>());
-		when(paymentRepo.findByUserUserId(readerId)).thenReturn(payment);
+		Optional<List<Payment>> paymentList = Optional.ofNullable(pList);
+		when(paymentRepo.findByUserUserId(readerId)).thenReturn(paymentList);
+		Books books = new Books();
+		books.setBookId(123L);
+		List<BookModel> bookModelList = new ArrayList<BookModel>();
+		BookModel bookResponse = new BookModel(123L,"book1", "comedy","xyz", "sncdhcdhdvdnhdhv", "image1.png", 120.0, true);
+		bookModelList.add(bookResponse);
 
 		List<BookModel> expected = readerService.listPurchasedBooks(readerId);
 
-		assertEquals(expected, payment.get());
-	    verify(paymentRepo).findByUserUserId(readerId);
-
+		assertNotNull(expected);
 	}
 	
-	@Test (expected = NullPointerException.class)
+	@Test
 	public void listBookByPaymentIDTest() {
 		long readerId = 4;
 		long pid = 5;
-		Optional<Payment> actual = Optional.ofNullable(new Payment());
+		Payment payment = new Payment();
+		payment.setId(123L);
+		User user = new User();
+		user.setUserId(123L);
+		Books book = new Books("title","category","publisher","content","logo",120.0,true,user);
+		book.setBookId(123L);
+		
+		payment.setBook(book);
+		Optional<Payment> actual = Optional.ofNullable(payment);
 		when(paymentRepo.findByUserUserIdAndId(readerId, pid)).thenReturn(actual);
+		BookModel bookResponse = new BookModel(123L,"book1", "comedy","xyz", "sncdhcdhdvdnhdhv", "image1.png", 120.0, true);
+		
 		BookModel expected = readerService.listBookByPaymentID(readerId, pid);
+		Assert.assertNotNull(expected);		
+	}
+	
+	@Test
+	public void testReadBook() {
+		long readerId = 4;
+		long bookId = 5;
+		Payment payment = new Payment();
+		payment.setId(123L);
+		User user = new User();
+		user.setUserId(123L);
+		Books book = new Books("title","category","publisher","content","logo",120.0,true,user);
+		book.setBookId(123L);
 		
-		assertEquals(expected, actual.get());
-	    verify(paymentRepo).findByUserUserIdAndId(readerId, pid);
+		payment.setBook(book);
+		Optional<Payment> actual = Optional.ofNullable(payment);
+		when(paymentRepo.findByUserUserIdAndBookBookId(readerId, bookId)).thenReturn(actual);
+		BookModel bookResponse = new BookModel(123L,"book1", "comedy","xyz", "sncdhcdhdvdnhdhv", "image1.png", 120.0, true);
 		
+		BookModel expected = readerService.readBook(readerId, bookId);
+		Assert.assertNotNull(expected);
 	}
 	 
 }

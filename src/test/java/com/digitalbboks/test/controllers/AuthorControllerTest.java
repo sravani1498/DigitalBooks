@@ -5,7 +5,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.digitalbooks.demo.controllers.AuthorController;
 import com.digitalbooks.demo.entity.Books;
+import com.digitalbooks.demo.exception.InternalServerErrorException;
 import com.digitalbooks.demo.model.BookModel;
 import com.digitalbooks.demo.model.MessageResponse;
 import com.digitalbooks.demo.services.AuthorService;
@@ -32,22 +36,22 @@ public class AuthorControllerTest {
 	@InjectMocks
 	AuthorController authorController;
 	
+	@Test
+    public void createBookTest() throws Exception{
+	 BookModel bookRequest = new BookModel();
+        bookRequest.setId(123L);
+        Books actual = new Books();
+		actual.setCategory("comedy");
+		actual.setTitle("book1");
+		actual.setPrice(42.98);
+		
+		BookModel bookResponse = new BookModel(123L,"book1", "comedy","xyz", "sncdhcdhdvdnhdhv", "image1.png", 120.0, true);
+        Mockito.when(authorService.createBook(123L, bookRequest)).thenReturn(actual);
+        Assert.assertNotNull(authorController.createBook(123L, bookRequest));
+    }
+	
 	 @Test
-	    public void createBookTest() throws Exception{
-		 BookModel bookRequest = new BookModel();
-	        bookRequest.setId(123L);
-	        Books actual = new Books();
-			actual.setCategory("comedy");
-			actual.setTitle("book1");
-			actual.setPrice(42.98);
-			
-			BookModel bookResponse = new BookModel(123L,"book1", "comedy","xyz", "sncdhcdhdvdnhdhv", "image1.png", 120.0, true);
-	        Mockito.when(authorService.createBook(123L, bookRequest)).thenReturn(actual);
-	        Assert.assertNotNull(authorController.createBook(123L, bookRequest));
-	    }
-
-	 @Test(expected = AssertionError.class)
-	 public void createBook() {
+	 public void createBook() throws InternalServerErrorException, SQLException {
 		BookModel book = new BookModel();
 		book.setCategory("comedy");
 		book.setTitle("book1");
@@ -59,10 +63,9 @@ public class AuthorControllerTest {
 		actual.setTitle("book1");
 		actual.setPrice(42.98);
 		
-		when(authorService.createBook(authorId, book)).thenReturn(actual);
 		
-		ResponseEntity<?> r = authorController.createBook(authorId, book);
-		Assert.assertNull(r);
+		ResponseEntity<?> r = authorController.createBook(authorId, null);
+		Assert.assertNotNull(r);
 	}
 	
 	@Test
@@ -77,5 +80,17 @@ public class AuthorControllerTest {
         Mockito.when(authorService.updateBook(123L,123L,bookRequest)).thenReturn((ResponseEntity<MessageResponse>) r);
         Assert.assertNotNull(authorController.updateBook(123L,123L,bookRequest));
     }
+	
+	@Test
+	public void listOfBooks() throws Exception {
+		Long authorId = 1L;
+		BookModel bookRequest = new BookModel();
+	    bookRequest.setId(123L);
+	    List<BookModel> bookList= new ArrayList<BookModel>();
+	    bookList.add(bookRequest);
+	    when(authorService.listOfBooks(authorId)).thenReturn(bookList);
+	    List<BookModel> expected = authorController.listOfBooks(authorId);
+	    assertNotNull(expected);
+	}
 }
 

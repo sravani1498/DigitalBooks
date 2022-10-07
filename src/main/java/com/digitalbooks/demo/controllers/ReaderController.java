@@ -54,7 +54,7 @@ public class ReaderController {
 	
 	@PreAuthorize("hasRole('ROLE_READER')")
 	@GetMapping("{readerId}/allBooks")
-	public List<BookModel> listPurchasedBooks(@PathVariable("readerId") Long readerId) {
+	public List<BookModel> listPurchasedBooks(@PathVariable("readerId") Long readerId) throws Exception {
 		return readerService.listPurchasedBooks(readerId);
 	}
 	

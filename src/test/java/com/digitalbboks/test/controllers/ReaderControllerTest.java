@@ -71,7 +71,16 @@ public class ReaderControllerTest {
 	}
 	
 	@Test
-	public void listPurchasedBooksTest() {
+	public void buyTest1() {
+		PaymentRequest payment = new PaymentRequest();
+		
+		Payment actual = new Payment();
+		ResponseEntity<?> expected = controller.buy(null);
+		assertNotNull(expected);
+	}
+	
+	@Test
+	public void listPurchasedBooksTest() throws Exception {
 		long readerId = 4;
 				
 		List<BookModel> actual = new ArrayList<>();
